@@ -15,8 +15,8 @@ POST http://localhost:3100/api/v1/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "email":"test12344@test.com",
-    "password":"user1223"
+    "email":"juli1234@gmail.com",
+    "password":"hola1233"
 }
 
 ###
