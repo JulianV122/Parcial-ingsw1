@@ -5,15 +5,20 @@ const { generateToken, refreshToken } = require("../utils/jwt");
 
 //Crear la funcion para el registro -signIn
 const signin = async (req, res) => {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, repeatPassword } = req.body;
+    console.log(req.body);
     try {
         if (!email) {
             res.status(400).json({ message: "El email es requerido" });
             throw new Error("El email es requerido");
         }
-        if (!password) {
+        if (!password || !repeatPassword) {
             res.status(400).json({ message: "La contraseña es requerida" });
             throw new Error("La contrasña es requerida");
+        }
+        if (password !== repeatPassword) {
+            res.status(400).json({ message: "Las contraseñas no coinciden" });
+            throw new Error("Las contraseñas no coinciden");
         }
         const emailLowerCase = email.toLowerCase();
         const salt = await bcrypt.genSalt(10);
@@ -24,6 +29,7 @@ const signin = async (req, res) => {
             lastname,
             email: emailLowerCase,
             password: current_password_hash,
+            repeatPassword: current_password_hash,
         });
 
         const userStorage = await newUser.save();
@@ -54,7 +60,7 @@ const login = async (req, res) => {
             throw new Error("La contraseña no es correcta");
         }
         const token = await generateToken(userStore);
-        res.status(200).json({ token });
+        res.status(200).json({ token , message: "Login correcto"});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
